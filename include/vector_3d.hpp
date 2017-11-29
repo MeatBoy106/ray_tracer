@@ -18,8 +18,20 @@ struct Vector_3d
 
     Vector_3d& operator=(const Vector_3d&) = default;
 
+
+    Vector_3d& operator+=(const Vector_3d& that);
+    Vector_3d& operator-=(const Vector_3d& that);
+    Vector_3d& operator*=(double k);
+    Vector_3d& operator/=(double k){return (*this *= (1/k));}
+
+
     Vector_3d normalized() const;
 };
+
+Vector_3d operator+(const Vector_3d& a, const Vector_3d& b);
+Vector_3d operator-(const Vector_3d& a, const Vector_3d& b);
+Vector_3d operator*(const Vector_3d& a, double k);
+Vector_3d operator/(const Vector_3d& a, double k);
 
 
 using Point = Vector_3d;
