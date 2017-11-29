@@ -26,6 +26,9 @@ private:
 
 public:
     World(const std::string& sceneFile);
+
+    void render();
+    void exportImage(const std::string& output) const;
 };
 
 #endif // WORLD_HPP

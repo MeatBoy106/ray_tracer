@@ -10,7 +10,7 @@ struct Ray
 
     Ray(const Point& p, const Vector_3d& v);
 
-    Ray reflect(const Point& p, const Vector_3d& normal);
+    Ray reflect(const Point& p, const Vector_3d& normal) const;
 };
 
 

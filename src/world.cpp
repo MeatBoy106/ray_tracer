@@ -127,3 +127,83 @@ void World::parseSceneFile(const string& sceneFile)
 
     mCamera = Camera(observer, topLeft, topRight, botLeft, hRes);
 }
+
+void World::render()
+{
+    auto findIntersection = [](const decltype(mShapes)& shapes, const Ray& ray){
+        bool found{false};
+        Point resPoint;
+        Shape const* resShape(nullptr);
+
+        for(auto& shape: shapes){
+            for(auto& i: shape->findIntersections(ray)){
+                if(!found || (i - ray.origin).norm < (resPoint - ray.origin).norm){
+                    found = true;
+                    resPoint = i;
+                    resShape = shape.get();
+                }
+            }
+        }
+
+        return make_tuple(found, resPoint, resShape);
+    };
+
+
+    function<Color(const Ray&, uint32_t)> computeRayColor =
+        [this, &findIntersection, &computeRayColor](const Ray& ray, uint32_t recDepth) -> Color {
+            auto iPrimary = findIntersection(this->mShapes, ray);
+
+            bool interFound(std::get<0>(iPrimary));
+            Point& interPoint(std::get<1>(iPrimary));
+            Shape const* shape(std::get<2>(iPrimary));
+
+            if(!interFound){
+                return mBackgroundColor;
+            }
+
+            Vector_3d interNormal = shape->normal(interPoint);
+
+            //Recursively compute the specular contribution
+            Color specColor(shape->getReflexion() > 0 ?
+                            computeRayColor(ray.reflect(interPoint, interNormal), recDepth - 1):
+                            Color());
+
+            //Light is visible if no intersection or intersection behind the light source
+            auto iShadow = findIntersection(this->mShapes, Ray(interPoint, mLightPos - interPoint));
+            bool interShadowFound = std::get<0>(iShadow);
+            Point& interShadowPoint(std::get<1>(iShadow));
+
+            Vector_3d interToLight(mLightPos - interPoint);
+            bool lightVisible{!interShadowFound ||
+                              (interShadowPoint - interPoint).norm > interToLight.norm};
+
+            Color diffuColor(lightVisible ?
+                             shape->getColor() * mLightColor * interNormal.scalar(interToLight.normalized()) * (1 - shape->getReflexion()) * (1 / 255.):
+                             Color());
+
+            return specColor + diffuColor;
+        };
+
+    auto res = mCamera.getResolution();
+    for(size_t x{0} ; x < res.first ; x++){
+        for(size_t y{0} ; y < res.second ; y++){
+            const auto& primRay = mCamera.getRay(x, y);
+            mCamera.setColor(x, y, computeRayColor(primRay, 5));
+        }
+    }
+}
+
+
+void World::exportImage(const std::string& output) const
+{
+    ofstream outImage(output);
+    if(!outImage){
+        throw(FileOpeningError(output));
+    }
+
+    auto resolution = mCamera.getResolution();
+    outImage << "P3" << '\n'
+             << resolution.first << " " << resolution.second << '\n';
+
+    outImage << mCamera;
+}

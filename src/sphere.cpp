@@ -30,8 +30,8 @@ vector<Point> Sphere::findIntersections(const Ray& r) const
     if (delta < 0){
         return vector<Point>();
     } else {
-        double k1{(-b - sqrt(delta)) / 2 / a},
-               k2{(-b + sqrt(delta)) / 2 / a};
+        double k1{(-b - sqrt(delta)) / 2 / a - epsilon},
+               k2{(-b + sqrt(delta)) / 2 / a - epsilon};
 
         return vector<Point>{ro + rd * k1,
                              ro + rd * k2};
