@@ -1,9 +1,11 @@
 #include <iostream>
+#include "world.hpp"
 
 using namespace std;
 
 int main()
 {
-    cout << "Hello world!" << endl;
+    World world("data/ex_world.txt");
+
     return 0;
 }

@@ -13,8 +13,8 @@ class World
 {
     Camera mCamera;
 
-    Point mLightSource;
-    Color mLightSourceColor;
+    Point mLightPos;
+    Color mLightColor;
 
     Color mBackgroundColor;
 
