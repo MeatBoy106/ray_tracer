@@ -3,15 +3,14 @@
 
 #include "vector_3d.hpp"
 
-class Ray
+struct Ray
 {
-    Point mOrigin;
-    Vector_3d mDirection;
+    const Point origin;
+    const Vector_3d direction;
 
-public:
     Ray(const Point& p, const Vector_3d& v);
 
-    Ray reflect(const Point& p, const Vector_3d& normal)&;
+    Ray reflect(const Point& p, const Vector_3d& normal);
 };
 
 

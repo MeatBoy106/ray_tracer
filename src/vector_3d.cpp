@@ -55,6 +55,12 @@ Vector_3d& Vector_3d::operator*=(double k)
     return *this;
 }
 
+double Vector_3d::scalar(const Vector_3d& that) const
+{
+    return x * that.x + y * that.y + z * that.z;
+}
+
+
 Vector_3d operator*(const Vector_3d& a, double k)
 {
     Vector_3d res(a);

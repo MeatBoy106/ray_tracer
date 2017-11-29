@@ -18,12 +18,12 @@ struct Vector_3d
 
     Vector_3d& operator=(const Vector_3d&) = default;
 
-
     Vector_3d& operator+=(const Vector_3d& that);
     Vector_3d& operator-=(const Vector_3d& that);
     Vector_3d& operator*=(double k);
     Vector_3d& operator/=(double k){return (*this *= (1/k));}
 
+    double scalar(const Vector_3d& that) const;
 
     Vector_3d normalized() const;
 };
