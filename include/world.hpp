@@ -6,15 +6,12 @@
 #include <memory>
 #include "vector_3d.hpp"
 #include "shape.hpp"
+#include "pixel.hpp"
+#include "camera.hpp"
 
 class World
 {
-    Point mCamera;
-
-    Point mScreenTopLeft,
-          mScreenTopRigh,
-          mScreenBotLeft;
-    std::vector<Pixel> mScreen;
+    Camera mCamera;
 
     Point mLightSource;
     Color mLightSourceColor;

@@ -2,24 +2,16 @@
 #include <sstream>
 #include <exception>
 
-class FileOpeningError : public std::runtime_error
+struct FileOpeningError : public std::runtime_error
 {
-    std::string mFile;
-public:
-    FileOpeningError(const std::string& file): mFile(file){};
+    FileOpeningError(const std::string& file):
+        runtime_error(std::string("Impossible to open file ") + file)
+    {}
+};
 
-    virtual const char* what() const
-    {
-        sstream buffer;
-        buffer << "Impossible to open file " << mFile;
-        return buffer.str.c_str();
-    }
-}
-
-class ParsingError : public std::runtime_error
+struct ParsingError : public std::runtime_error
 {
-    virtual const char* what() const
-    {
-        return "Error while parsing file.";
-    }
-}
+    ParsingError():
+        runtime_error("Error while parsing file.")
+    {}
+};

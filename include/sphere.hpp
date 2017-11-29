@@ -10,8 +10,8 @@ class Sphere : public Shape
     double mRadius;
 
 public:
-    Sphere(const Point& center, double radius);
-    virtual ~Sphere();
+    Sphere(const Point& center, double radius, const Color& color);
+    virtual ~Sphere() = default;
 
     virtual std::vector<Point> findIntersections(const Ray& r) const;
     virtual Vector_3d normal(const Point& p) const;

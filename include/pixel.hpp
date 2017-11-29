@@ -2,12 +2,16 @@
 #define PIXEL_HPP
 
 #include <ostream>
-#include "Color.hpp"
+#include "color.hpp"
+#include "vector_3d.hpp"
 
 class Pixel
 {
+    Point position;
+
     uint32_t mX;
     uint32_t mY;
+
     Color mColor;
 
 public:

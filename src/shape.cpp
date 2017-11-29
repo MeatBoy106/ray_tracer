@@ -1,11 +1,5 @@
 #include "shape.hpp"
 
-shape::shape()
-{
-    //ctor
-}
-
-shape::~shape()
-{
-    //dtor
-}
+Shape::Shape(const Color& color):
+    mColor(color)
+{}

@@ -1,18 +1,18 @@
 #include <fstream>
+#include <cctype>
+#include <limits>
+
 #include "world.hpp"
-#include "rayTracerException.hpp"
+#include "rayTracerExceptions.hpp"
 
 using namespace std;
 
-World::World(const string& sceneFile);
+World::World(const string& sceneFile)
 {
     parseSceneFile(sceneFile);
 }
 
-World::~World()
-{}
-
-void World::parseSceneFile(const string& scenefile)
+void World::parseSceneFile(const string& sceneFile)
 {
     enum parserState{
         CAMERA_POSITION = 0,
@@ -23,55 +23,56 @@ void World::parseSceneFile(const string& scenefile)
         BACKGROUND_COLOR,
         LIGHT_POS_COLOR,
         SHAPES
-    }
-
-    ifstream file(scenefile);
-
-    auto testParseFail = [&file](){
-        if(file.fail()){
-            throw ParsingError;
-        }
     };
 
-    auto ignoreComments = [&file](){
-        testParseFail();
-        while(file.peek( == '#')){
-            file.ignore(std::numeric_limits<std::streamsize>::max())
-        }
-    }
+    ifstream file(sceneFile);
 
-    if(!scenefile){
-        throw FileOpeningError(scenefile);
+    auto findNextLine = [&file](){
+        if(file.fail()){
+            throw ParsingError();
+        }
+        //Flush the currently extracted line
+        do{
+            //The first line shall not be flushed directly
+            if(file.tellg() != 0){
+                file.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+        }while(file.peek() == '#');
+    };
+
+    if(!file){
+        throw FileOpeningError(sceneFile);
     }
 
     parserState state{CAMERA_POSITION};
 
-    while(!scenefile.eof()){
-        ignoreComments();
+    Point observer, topLeft, topRight, botLeft;
+
+    while(!file.eof()){
+        findNextLine();
 
         switch(state){
-        case CAMERA_POSITION:
             double x, y, z;
-            cin >> x >> y >> z;
-            mCamera(x, y, z);
+            //uint8_t r, g, b;
+
+        case CAMERA_POSITION:
+            file >> x >> y >> z;
+            observer = Point(x, y, z);
             break;
 
         case SCREEN_TOP_LEFT:
-            double x, y, z;
-            cin >> x >> y >> z;
-            mScreenTopLeft(x, y, z);
+            file >> x >> y >> z;
+            topLeft = Point(x, y, z);
             break;
 
         case SCREEN_TOP_RIGHT:
-            double x, y, z;
-            cin >> x >> y >> z;
-            mScreenTopRight(x, y, z);
+            file >> x >> y >> z;
+            topRight = Point(x, y, z);
             break;
 
         case SCREEN_BOT_LEFT:
-            double x, y, z;
-            cin >> x >> y >> z;
-            mScreenBotLeft(x, y, z);
+            file >> x >> y >> z;
+            botLeft = Point(x, y, z);
             break;
 
         case SCREEN_H_RESOLUTION:

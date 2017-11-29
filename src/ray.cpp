@@ -1,11 +1,9 @@
+#include <cmath>
 #include "ray.hpp"
 
-Ray::Ray()
-{
-    //ctor
-}
+using namespace std;
 
-Ray::~Ray()
-{
-    //dtor
-}
+Ray::Ray(const Point& p, const Vector_3d& v):
+    mOrigin(p),
+    mDirection(v.normalized())
+{}

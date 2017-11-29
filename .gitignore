@@ -1,3 +1,6 @@
 raytracing.cbp
 raytracing.layout
 build
+bin
+obj
+raytracing.depend
