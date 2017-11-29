@@ -63,8 +63,6 @@ void World::parseSceneFile(const string& sceneFile)
         double x, y, z, radius, reflex;
         uint32_t r, g, b;
         string shape;
-      
-        switch(state){
 
         switch(state){
         case CAMERA_POSITION:
@@ -122,7 +120,7 @@ void World::parseSceneFile(const string& sceneFile)
                 throw ParsingError();
             }
             break;
-            
+
         default: break;
         }
     }
