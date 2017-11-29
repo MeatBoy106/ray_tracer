@@ -8,6 +8,7 @@
 #include "shape.hpp"
 #include "pixel.hpp"
 #include "camera.hpp"
+#include "color.hpp"
 
 class World
 {

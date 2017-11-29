@@ -51,17 +51,20 @@ void World::parseSceneFile(const string& sceneFile)
         }while(file.peek() == '#' || file.peek() == '\n');
     };
 
-    parserState state{CAMERA_POSITION};
+    parserState state(CAMERA_POSITION);
 
     Point observer, topLeft, topRight, botLeft;
     uint32_t hRes;
 
-    while(!file.eof()){
+    while(true){
         findNextLine();
+        if(file.eof()) break;
 
         double x, y, z, radius, reflex;
         uint32_t r, g, b;
         string shape;
+      
+        switch(state){
 
         switch(state){
         case CAMERA_POSITION:
@@ -119,7 +122,7 @@ void World::parseSceneFile(const string& sceneFile)
                 throw ParsingError();
             }
             break;
-
+            
         default: break;
         }
     }
