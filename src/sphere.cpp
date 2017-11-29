@@ -2,8 +2,8 @@
 
 using namespace std;
 
-Sphere::Sphere(const Point& center, double radius, const Color& color):
-    Shape(color),
+Sphere::Sphere(const Point& center, double radius, const Color& color, double reflexion):
+    Shape(color, reflexion),
     mCenter(center),
     mRadius(radius)
 {}
