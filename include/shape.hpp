@@ -9,9 +9,10 @@
 class Shape
 {
     Color mColor;
+    double mReflexion;
 
 public:
-    Shape(const Color& color);
+    Shape(const Color& color, double reflexion);
     virtual ~Shape() = default;
 
     virtual std::vector<Point> findIntersections(const Ray& r) const = 0;

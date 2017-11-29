@@ -4,6 +4,9 @@
 
 #include "world.hpp"
 #include "rayTracerExceptions.hpp"
+#include "sphere.hpp"
+
+#include <iostream>
 
 using namespace std;
 
@@ -31,18 +34,21 @@ void World::parseSceneFile(const string& sceneFile)
         throw FileOpeningError(sceneFile);
     }
 
-
     auto findNextLine = [&file](){
         if(file.fail()){
             throw ParsingError();
         }
-        //Flush the currently extracted line
+        //Flush the currently extracted line and then the commented or empty lines
         do{
-            //The first line shall not be flushed directly
-            if(file.tellg() != 0){
+            //Only the first line is not always ignored(1st condition)
+            //The other lines are considered parsed and the end can be ignored (at least '\n')
+            if(file.tellg() != 0 ||
+               file.peek() == '#' ||
+               file.peek() == '\n')
+            {
                 file.ignore(numeric_limits<streamsize>::max(), '\n');
             }
-        }while(file.peek() == '#');
+        }while(file.peek() == '#' || file.peek() == '\n');
     };
 
     parserState state(CAMERA_POSITION);
@@ -54,10 +60,13 @@ void World::parseSceneFile(const string& sceneFile)
         findNextLine();
         if(file.eof()) break;
 
+        double x, y, z, radius, reflex;
+        uint32_t r, g, b;
+        string shape;
+      
         switch(state){
-            double x, y, z;
-            uint8_t r, g, b;
 
+        switch(state){
         case CAMERA_POSITION:
             file >> x >> y >> z;
             observer = Point(x, y, z);
@@ -102,8 +111,21 @@ void World::parseSceneFile(const string& sceneFile)
             break;
 
         case SHAPES:
+            file >> shape;
+            if(shape == "sphere:"){
+                file >> x >> y >> z >> radius
+                     >> r >> g >> b >> reflex;
+                Point center(x, y, z);
+                Color color(r, g, b);
+                mShapes.push_back(unique_ptr<Shape>(new Sphere(center, radius, color, reflex)));
+            } else {
+                throw ParsingError();
+            }
             break;
+            
         default: break;
         }
     }
+
+    mCamera = Camera(observer, topLeft, topRight, botLeft, hRes);
 }
