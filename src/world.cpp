@@ -1,5 +1,4 @@
 #include <fstream>
-#include <cctype>
 #include <limits>
 
 #include "world.hpp"
@@ -18,7 +17,7 @@ World::World(const string& sceneFile)
 void World::parseSceneFile(const string& sceneFile)
 {
     enum parserState{
-        CAMERA_POSITION = 0,
+        CAMERA_POSITION,
         SCREEN_TOP_LEFT,
         SCREEN_TOP_RIGHT,
         SCREEN_BOT_LEFT,
@@ -54,7 +53,7 @@ void World::parseSceneFile(const string& sceneFile)
     parserState state(CAMERA_POSITION);
 
     Point observer, topLeft, topRight, botLeft;
-    uint32_t hRes;
+    uint32_t hRes{1};
 
     while(true){
         findNextLine();
@@ -104,7 +103,7 @@ void World::parseSceneFile(const string& sceneFile)
             file >> x >> y >> z;
             file >> r >> g >> b;
             mLightPos = Point(x, y, z);
-            mLightColor = Color(x, y, z);
+            mLightColor = Color(r, g, b);
             state = SHAPES;
             break;
 
@@ -126,4 +125,85 @@ void World::parseSceneFile(const string& sceneFile)
     }
 
     mCamera = Camera(observer, topLeft, topRight, botLeft, hRes);
+}
+
+void World::render()
+{
+    auto findIntersection = [](const decltype(mShapes)& shapes, const Ray& ray){
+        bool found{false};
+        Point resPoint;
+        Shape const* resShape(nullptr);
+
+        for(auto& shape: shapes){
+            for(auto& i: shape->findIntersections(ray)){
+                if(!found || (i - ray.origin).norm < (resPoint - ray.origin).norm){
+                    found = true;
+                    resPoint = i;
+                    resShape = shape.get();
+                }
+            }
+        }
+
+        return make_tuple(found, resPoint, resShape);
+    };
+
+
+    function<Color(const Ray&, uint32_t)> computeRayColor =
+        [this, &findIntersection, &computeRayColor](const Ray& ray, uint32_t recDepth) -> Color {
+            auto iPrimary = findIntersection(this->mShapes, ray);
+
+            bool interFound(std::get<0>(iPrimary));
+            Point& interPoint(std::get<1>(iPrimary));
+            Shape const* shape(std::get<2>(iPrimary));
+
+            if(!interFound){
+                return mBackgroundColor;
+            }
+
+            Vector_3d interNormal = shape->normal(interPoint);
+
+            //Recursively compute the specular contribution
+            Color specColor(shape->getReflexion() > 0 && recDepth > 0 ?
+                            computeRayColor(ray.reflect(interPoint, interNormal), recDepth - 1):
+                            Color());
+
+            //Light is visible if no intersection or intersection behind the light source
+            auto iShadow = findIntersection(this->mShapes, Ray(interPoint, mLightPos - interPoint));
+            bool interShadowFound = std::get<0>(iShadow);
+            Point& interShadowPoint(std::get<1>(iShadow));
+
+            Vector_3d interToLight(mLightPos - interPoint);
+            bool lightVisible{!interShadowFound ||
+                              (interShadowPoint - interPoint).norm > interToLight.norm};
+
+            Color diffuColor(lightVisible ?
+                             shape->getColor() * mLightColor * interNormal.scalar(interToLight.normalized()) * (1 - shape->getReflexion()) * (1 / 255.):
+                             Color());
+
+            return specColor * shape->getReflexion() + diffuColor;
+        };
+
+    auto res = mCamera.getResolution();
+    for(size_t x{0} ; x < res.first ; x++){
+        for(size_t y{0} ; y < res.second ; y++){
+            const auto& primRay = mCamera.getRay(x, y);
+            mCamera.setColor(x, y, computeRayColor(primRay, 1));
+        }
+    }
+}
+
+
+void World::exportImage(const std::string& output) const
+{
+    ofstream outImage(output);
+    if(!outImage){
+        throw(FileOpeningError(output));
+    }
+
+    auto resolution = mCamera.getResolution();
+    outImage << "P3" << '\n'
+             << resolution.first << " " << resolution.second << '\n'
+             << 255 << '\n';
+
+    outImage << mCamera;
 }

@@ -1,0 +1,23 @@
+# camera position (x = 100, y = 100, z = 0)
+0 0 0
+
+# screen position
+# top left corner
+100 -20 20
+
+# top right corner
+100 20 20
+
+# bottom left corner
+100 -20 -20
+
+# screen horizontal resolution
+100
+
+# background color
+0 0 0
+# light source position and color
+0 40 40 255 255 255
+
+# shapes
+sphere: 120 0 0 30 255 255 255 0.5

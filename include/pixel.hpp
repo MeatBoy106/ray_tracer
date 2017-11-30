@@ -5,17 +5,12 @@
 #include "color.hpp"
 #include "vector_3d.hpp"
 
-class Pixel
+struct Pixel : public Point
 {
-    Point position;
+    Color color;
 
-    uint32_t mX;
-    uint32_t mY;
-
-    Color mColor;
-
-public:
-    Pixel(uint32_t x, uint32_t y, Color c);
+    Pixel() = default;
+    Pixel(const Point& p, Color c = Color());
 };
 
 std::ostream& operator <<(std::ofstream& os, const Pixel& p);
