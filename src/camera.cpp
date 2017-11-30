@@ -19,8 +19,8 @@ Camera::Camera(const Point& observer,
         column.resize(hResolution);
     }
 
-    for(size_t x{0} ; x < mSensor.size() ; ++x){
-        for(size_t y{0} ; y < mSensor.size() ; ++y){
+    for(size_t y{0} ; y < mSensor.size() ; ++y){
+        for(size_t x{0} ; x < mSensor[y].size() ; ++x){
             mSensor[y][x] = Pixel(Point(topLeft + h * x + v * y));
         }
     }
@@ -35,7 +35,7 @@ pair<size_t, size_t> Camera::getResolution() const
 
 Ray Camera::getRay(size_t x, size_t y) const
 {
-    return Ray(mSensor[y][x], mSensor[y][x] - mCenter);
+    return {mSensor[y][x], mSensor[y][x] - mCenter};
 }
 
 

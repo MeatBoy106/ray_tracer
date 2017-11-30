@@ -4,7 +4,7 @@
 
 struct FileOpeningError : public std::runtime_error
 {
-    FileOpeningError(const std::string& file):
+    explicit FileOpeningError(const std::string& file):
         runtime_error(std::string("Impossible to open file ") + file)
     {}
 };

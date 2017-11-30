@@ -12,7 +12,7 @@ struct Vector_3d
     double z;
     double norm;
 
-    Vector_3d() = default;
+    Vector_3d(): x(0), y(0), z(0), norm(0){};
     Vector_3d(const Vector_3d&) = default;
     Vector_3d(double x, double y, double z);
 

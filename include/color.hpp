@@ -7,13 +7,16 @@
 class Color{
     friend std::ostream& operator <<(std::ostream& stream, const Color& color);
 
-    uint8_t mR;
-    uint8_t mG;
-    uint8_t mB;
+    uint32_t mR;
+    uint32_t mG;
+    uint32_t mB;
+
+private:
+    void bound();
 
 public:
     Color() = default;
-    Color(uint8_t r, uint8_t g, uint8_t b);
+    Color(uint32_t r, uint32_t g, uint32_t b);
 
     Color& operator*= (double k);
     Color& operator*= (const Color& that);
@@ -24,7 +27,5 @@ public:
 Color operator* (const Color& c, double k);
 Color operator* (const Color& c1, const Color& c2);
 Color operator+ (const Color& c1, const Color& c2);
-
-std::ostream& operator <<(std::ostream& stream, const Color& color);
 
 #endif // COMMON_HPP

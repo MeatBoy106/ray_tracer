@@ -10,31 +10,37 @@ Sphere::Sphere(const Point& center, double radius, const Color& color, double re
 
 vector<Point> Sphere::findIntersections(const Ray& r) const
 {
-    auto squared = [](double x){return x * x;};
-    //Solving aX² + bX + c = 0
-
     const Point &ro{r.origin},
                 &mc{mCenter};
     const Vector_3d& rd{r.direction};
 
-    double a{squared(rd.x) + squared(rd.y) + squared(rd.z)},
+    //Solving aX² + bX + c = 0
+    double a{rd.x * rd.x + rd.y * rd.y + rd.z * rd.z},
            b{2 * ((ro.x - mc.x) * rd.x +
                   (ro.y - mc.y) * rd.y +
                   (ro.z - mc.z) * rd.z)},
-           c{squared(ro.x - mc.x) +
-             squared(ro.y - mc.y) +
-             squared(ro.z - mc.z) - mRadius};
+           c{(ro.x - mc.x) * (ro.x - mc.x) +
+             (ro.y - mc.y) * (ro.y - mc.y) +
+             (ro.z - mc.z) * (ro.z - mc.z) - mRadius};
 
-    double delta = squared(b) - 4 * a * c;
+    double delta{b * b - 4 * a * c};
 
     if (delta < 0){
         return vector<Point>();
     } else {
-        double k1{(-b - sqrt(delta)) / 2 / a - epsilon},
-               k2{(-b + sqrt(delta)) / 2 / a - epsilon};
-
-        return vector<Point>{ro + rd * k1,
-                             ro + rd * k2};
+        double sqrtDelta{sqrt(delta)};
+        double k1{(-b - sqrtDelta) / 2 / a - epsilon},
+               k2{(-b + sqrtDelta) / 2 / a - epsilon};
+        if(k1 > 0 && k2 > 0){
+            return vector<Point>{ro + rd * k1,
+                                 ro + rd * k2};
+        } else if (k1 > 0) {
+            return vector<Point>{ro + rd * k1};
+        } else if (k2 > 0) {
+            return vector<Point>{ro + rd * k2};
+        } else {
+            return vector<Point>();
+        }
     }
 }
 
