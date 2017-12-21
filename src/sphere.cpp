@@ -21,7 +21,7 @@ vector<Point> Sphere::findIntersections(const Ray& r) const
                   (ro.z - mc.z) * rd.z)},
            c{(ro.x - mc.x) * (ro.x - mc.x) +
              (ro.y - mc.y) * (ro.y - mc.y) +
-             (ro.z - mc.z) * (ro.z - mc.z) - mRadius};
+             (ro.z - mc.z) * (ro.z - mc.z) - mRadius * mRadius};
 
     double delta{b * b - 4 * a * c};
 

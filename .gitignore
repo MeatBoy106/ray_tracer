@@ -3,4 +3,6 @@ raytracing.layout
 build
 bin
 obj
+*.ppm
 raytracing.depend
+cmake-build*
