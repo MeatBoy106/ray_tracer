@@ -184,10 +184,12 @@ void World::render()
         };
 
     auto res = mCamera.getResolution();
-    for(size_t x{0} ; x < res.first ; x++){
-        for(size_t y{0} ; y < res.second ; y++){
+
+#pragma omp parallel for collapse(2)
+    for(size_t x=0 ; x < res.first ; x++){
+        for(size_t y=0 ; y < res.second ; y++){
             const auto& primRay = mCamera.getRay(x, y);
-            mCamera.setColor(x, y, computeRayColor(primRay, 1));
+            mCamera.setColor(x, y, computeRayColor(primRay, 50));
         }
     }
 }

@@ -25,7 +25,7 @@ private:
     void parseSceneFile(const std::string& sceneFile);
 
 public:
-    World(const std::string& sceneFile);
+    explicit World(const std::string& sceneFile);
 
     void render();
     void exportImage(const std::string& output) const;

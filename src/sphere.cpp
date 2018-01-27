@@ -26,20 +26,19 @@ vector<Point> Sphere::findIntersections(const Ray& r) const
     double delta{b * b - 4 * a * c};
 
     if (delta < 0){
-        return vector<Point>();
+        return {};
     } else {
         double sqrtDelta{sqrt(delta)};
         double k1{(-b - sqrtDelta) / 2 / a - epsilon},
                k2{(-b + sqrtDelta) / 2 / a - epsilon};
         if(k1 > 0 && k2 > 0){
-            return vector<Point>{ro + rd * k1,
-                                 ro + rd * k2};
+            return {ro + rd * k1, ro + rd * k2};
         } else if (k1 > 0) {
-            return vector<Point>{ro + rd * k1};
+            return {ro + rd * k1};
         } else if (k2 > 0) {
-            return vector<Point>{ro + rd * k2};
+            return {ro + rd * k2};
         } else {
-            return vector<Point>();
+            return {};
         }
     }
 }

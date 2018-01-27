@@ -7,10 +7,11 @@
 
 struct Pixel : public Point
 {
-    Color color;
+    Color color{};
 
     Pixel() = default;
-    Pixel(const Point& p, Color c = Color());
+
+    explicit Pixel(const Point& p, Color c = Color());
 };
 
 std::ostream& operator <<(std::ofstream& os, const Pixel& p);

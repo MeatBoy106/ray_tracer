@@ -27,6 +27,4 @@ public:
     void setColor(size_t x, size_t y, Color c);
 };
 
-std::ostream& operator <<(std::ostream& stream, const Camera& camera);
-
 #endif // CAMERA_HPP

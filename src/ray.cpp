@@ -10,5 +10,5 @@ Ray::Ray(const Point& p, const Vector_3d& v):
 
 Ray Ray::reflect(const Point& p, const Vector_3d& normal) const
 {
-    return Ray(p, direction - normal * 2 * (direction.scalar(normal)));
+    return {p, direction - normal * 2 * (direction.scalar(normal))};
 }

@@ -29,7 +29,7 @@ Camera::Camera(const Point& observer,
 
 pair<size_t, size_t> Camera::getResolution() const
 {
-    return make_pair(mSensor.size(), mSensor[0].size());
+    return make_pair(mSensor[0].size(), mSensor.size());
 }
 
 

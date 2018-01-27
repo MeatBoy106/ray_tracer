@@ -11,10 +11,12 @@ class Sphere : public Shape
 
 public:
     Sphere(const Point& center, double radius, const Color& color, double reflexion);
-    virtual ~Sphere() = default;
 
-    virtual std::vector<Point> findIntersections(const Ray& r) const;
-    virtual Vector_3d normal(const Point& p) const;
+    ~Sphere() override = default;
+
+    std::vector<Point> findIntersections(const Ray& r) const override;
+
+    Vector_3d normal(const Point& p) const override;
 };
 
 #endif // SPHERE_H
