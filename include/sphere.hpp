@@ -14,7 +14,7 @@ public:
 
     ~Sphere() override = default;
 
-    std::vector<Point> findIntersections(const Ray& r) const override;
+    std::pair<bool, Point> findIntersection(const Ray &r) const override;
 
     Vector_3d normal(const Point& p) const override;
 };

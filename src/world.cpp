@@ -136,10 +136,13 @@ void World::render()
         Shape const* resShape(nullptr);
 
         for(auto& shape: shapes){
-            for(auto& i: shape->findIntersections(ray)){
-                if(!found || (i - ray.origin).norm < (resPoint - ray.origin).norm){
+            bool f;
+            Point p;
+            tie(f, p) = shape->findIntersection(ray);
+            if(f){
+                if(!found || (p - ray.origin).norm < (resPoint - ray.origin).norm){
                     found = true;
-                    resPoint = i;
+                    resPoint = p;
                     resShape = shape.get();
                 }
             }
@@ -151,11 +154,11 @@ void World::render()
 
     function<Color(const Ray&, uint32_t)> computeRayColor =
         [this, &findIntersection, &computeRayColor](const Ray& ray, uint32_t recDepth) -> Color {
-            auto iPrimary = findIntersection(this->mShapes, ray);
+            bool interFound;
+            Point interPoint;
+            Shape const* shape;
 
-            bool interFound(std::get<0>(iPrimary));
-            Point& interPoint(std::get<1>(iPrimary));
-            Shape const* shape(std::get<2>(iPrimary));
+            tie(interFound, interPoint, shape) = findIntersection(this->mShapes, ray);
 
             if(!interFound){
                 return mBackgroundColor;

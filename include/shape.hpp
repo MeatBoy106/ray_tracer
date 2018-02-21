@@ -20,7 +20,7 @@ public:
     Color getColor() const {return mColor;}
     double getReflexion() const {return mReflexion;}
 
-    virtual std::vector<Point> findIntersections(const Ray& r) const = 0;
+    virtual std::pair<bool, Point> findIntersection(const Ray &r) const = 0;
     virtual Vector_3d normal(const Point& p) const = 0;
 };
 

@@ -8,7 +8,7 @@ Sphere::Sphere(const Point& center, double radius, const Color& color, double re
     mRadius(radius)
 {}
 
-vector<Point> Sphere::findIntersections(const Ray& r) const
+pair<bool, Point> Sphere::findIntersection(const Ray &r) const
 {
     const Point &ro{r.origin},
                 &mc{mCenter};
@@ -32,13 +32,13 @@ vector<Point> Sphere::findIntersections(const Ray& r) const
         double k1{(-b - sqrtDelta) / 2 / a - epsilon},
                k2{(-b + sqrtDelta) / 2 / a - epsilon};
         if(k1 > 0 && k2 > 0){
-            return {ro + rd * k1, ro + rd * k2};
+            return {true , k1 < k2 ? (ro + rd * k1) : (ro + rd * k2)};
         } else if (k1 > 0) {
-            return {ro + rd * k1};
+            return {true, ro + rd * k1};
         } else if (k2 > 0) {
-            return {ro + rd * k2};
+            return {true, ro + rd * k2};
         } else {
-            return {};
+            return {false, Point()};
         }
     }
 }
