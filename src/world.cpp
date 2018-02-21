@@ -1,11 +1,12 @@
 #include <fstream>
+#include <iostream>
 #include <limits>
+#include <functional>
 
 #include "world.hpp"
 #include "rayTracerExceptions.hpp"
-#include "sphere.hpp"
 
-#include <iostream>
+#include "sphere.hpp"
 
 using namespace std;
 
@@ -177,7 +178,7 @@ void World::render()
                               (interShadowPoint - interPoint).norm > interToLight.norm};
 
             Color diffuColor(lightVisible ?
-                             shape->getColor() * mLightColor * interNormal.scalar(interToLight.normalized()) * (1 - shape->getReflexion()) * (1 / 255.):
+                             shape->getColor() * mLightColor * interNormal.dotProduct(interToLight.normalized()) * (1 - shape->getReflexion()) * (1 / 255.):
                              Color());
 
             return specColor * shape->getReflexion() + diffuColor;

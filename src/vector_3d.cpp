@@ -7,55 +7,22 @@ Vector_3d::Vector_3d(double x, double y, double z):
 
 Vector_3d Vector_3d::normalized() const
 {
-    return Vector_3d(x/norm, y/norm, z/norm);
-}
-
-
-Vector_3d& Vector_3d::operator+=(const Vector_3d& that)
-{
-    x += that.x;
-    y += that.y;
-    z += that.z;
-    norm = sqrt(x * x + y * y + z * z);
-
-    return *this;
-}
-
-
-Vector_3d& Vector_3d::operator-=(const Vector_3d& that)
-{
-    x -= that.x;
-    y -= that.y;
-    z -= that.z;
-    norm = sqrt(x * x + y * y + z * z);
-
-    return *this;
+    return {x/norm, y/norm, z/norm};
 }
 
 Vector_3d operator+(const Vector_3d& a, const Vector_3d& b)
 {
-    Vector_3d res(a);
-    return res += b;
+    return {a.x + b.x, a.y + b.y, a.z + b.z};
 }
 
 
 Vector_3d operator-(const Vector_3d& a, const Vector_3d& b)
 {
-    Vector_3d res(a);
-    return res -= b;
+    return {a.x - b.x, a.y - b.y, a.z - b.z};
 }
 
-Vector_3d& Vector_3d::operator*=(double k)
-{
-    x *= k;
-    y *= k;
-    z *= k;
-    norm = sqrt(x * x + y * y + z * z);
 
-    return *this;
-}
-
-double Vector_3d::scalar(const Vector_3d& that) const
+double Vector_3d::dotProduct(const Vector_3d &that) const
 {
     return x * that.x + y * that.y + z * that.z;
 }
@@ -63,12 +30,11 @@ double Vector_3d::scalar(const Vector_3d& that) const
 
 Vector_3d operator*(const Vector_3d& a, double k)
 {
-    Vector_3d res(a);
-    return res *= k;
+    return {a.x * k, a.y * k, a.z * k};
 }
 
 Vector_3d operator/(const Vector_3d& a, double k)
 {
-    return a * (1/k);
+    return {a.x / k, a.y / k, a.z / k};
 }
 
